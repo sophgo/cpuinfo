@@ -34,6 +34,16 @@
 	#define CPUINFO_ARCH_PPC64 1
 #endif
 
+#if defined(__riscv)
+    #if __riscv_xlen == 32
+        #define CPUINFO_ARCH_RISCV 1
+    #elif __riscv_xlen == 64
+        #define CPUINFO_ARCH_RISCV64 1
+    #else
+        #error "Unexpected __riscv_xlen"
+    #endif
+#endif
+
 #if defined(__asmjs__)
 	#define CPUINFO_ARCH_ASMJS 1
 #endif
@@ -66,6 +76,14 @@
 
 #ifndef CPUINFO_ARCH_PPC64
 	#define CPUINFO_ARCH_PPC64 0
+#endif
+
+#ifndef CPUINFO_ARCH_RISCV
+    #define CPUINFO_ARCH_RISCV 0
+#endif
+
+#ifndef CPUINFO_ARCH_RISCV64
+    #define CPUINFO_ARCH_RISCV64 0
 #endif
 
 #ifndef CPUINFO_ARCH_ASMJS
@@ -257,6 +275,10 @@ enum cpuinfo_vendor {
 	 * Sold its ARM designs in 1997. The last processor design was released in 1997.
 	 */
 	cpuinfo_vendor_dec       = 57,
+    /**
+     * SiFive. Vendor of RISC-V processor microarchitecture.
+     */
+     cpuinfo_vendor_sifive   = 58,
 };
 
 /**
@@ -532,6 +554,9 @@ enum cpuinfo_uarch {
 
 	/** HiSilicon TaiShan v110 (Huawei Kunpeng 920 series processors). */
 	cpuinfo_uarch_taishan_v110 = 0x00C00100,
+
+    /** SiFive U74-MC Standard Core. */
+    cpuinfo_uarch_u74_mc = 0x00D00100,
 };
 
 struct cpuinfo_processor {
@@ -1860,6 +1885,72 @@ static inline bool cpuinfo_has_arm_sve2(void) {
 	#else
 		return false;
 	#endif
+}
+
+#if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+/* This structure is not a part of stable API. Use cpuinfo_has_riscv_* functions instead. */
+	struct cpuinfo_riscv_isa {
+        bool a;
+        bool c;
+        bool d;
+        bool f;
+        #if CPUINFO_ARCH_RISCV
+            bool i;
+        #endif
+        bool m;
+    };
+
+	extern struct cpuinfo_riscv_isa cpuinfo_isa;
+#endif
+
+static inline bool cpuinfo_has_riscv_a(void) {
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        return cpuinfo_isa.a;
+    #else
+        return false;
+    #endif
+}
+
+static inline bool cpuinfo_has_riscv_c(void) {
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        return cpuinfo_isa.c;
+    #else
+        return false;
+    #endif
+}
+
+static inline bool cpuinfo_has_riscv_d(void) {
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        return cpuinfo_isa.d;
+    #else
+        return false;
+    #endif
+}
+
+static inline bool cpuinfo_has_riscv_f(void) {
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        return cpuinfo_isa.f;
+    #else
+        return false;
+    #endif
+}
+
+static inline bool cpuinfo_has_riscv_i(void) {
+    #if CPUINFO_ARCH_RISCV
+        return cpuinfo_isa.i;
+    #elif CPUINFO_ARCH_RISCV64
+        return true;
+    #else
+        return false;
+    #endif
+}
+
+static inline bool cpuinfo_has_riscv_m(void) {
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        return cpuinfo_isa.m;
+    #else
+        return false;
+    #endif
 }
 
 const struct cpuinfo_processor* CPUINFO_ABI cpuinfo_get_processors(void);

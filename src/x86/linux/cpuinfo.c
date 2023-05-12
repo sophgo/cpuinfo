@@ -188,7 +188,6 @@ static bool parse_line(
 		default:
 		unknown:
 			cpuinfo_log_debug("unknown /proc/cpuinfo key: %.*s", (int) key_length, line_start);
-
 	}
 	return true;
 }

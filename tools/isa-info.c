@@ -178,4 +178,20 @@ int main(int argc, char** argv) {
 		printf("\tCRC32: %s\n", cpuinfo_has_arm_crc32() ? "yes" : "no");
 #endif
 
+#if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+    printf("Instruction sets:\n");
+        #if CPUINFO_ARCH_RISCV
+            printf("\tBase Integer Instruction Set - 32-bit: %s\n", cpuinfo_has_riscv_i() ? "yes" : "no");
+        #elif CPUINFO_ARCH_RISCV64
+            printf("\tBase Integer Instruction Set - 64-bit: yes\n");
+        #endif
+        printf("\tInteger Multiplication and Division: %s\n", cpuinfo_has_riscv_m() ? "yes" : "no");
+        printf("\tAtomic instructions: %s\n", cpuinfo_has_riscv_a() ? "yes" : "no");
+        printf("\tCompressed Instructions: %s\n", cpuinfo_has_riscv_c() ? "yes" : "no");
+
+    printf("Floating-Point support:\n");
+        printf("\tSingle-Precision Floating-Point: %s\n", cpuinfo_has_riscv_f() ? "yes" : "no");
+        printf("\tDouble-Precision Floating-Point: %s\n", cpuinfo_has_riscv_d() ? "yes" : "no");
+#endif
+
 }

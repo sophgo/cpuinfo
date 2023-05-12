@@ -63,7 +63,11 @@ struct cpuinfo_mock_property {
 	#endif
 	#if CPUINFO_ARCH_ARM
 		void CPUINFO_ABI cpuinfo_set_hwcap2(uint32_t hwcap2);
-	#endif
+    #endif
+
+    #if CPUINFO_ARCH_RISCV || CPUINFO_ARCH_RISCV64
+        void CPUINFO_ABI cpuinfo_set_hwcap(uint32_t hwcap);
+    #endif
 #endif
 
 #if defined(__ANDROID__)
